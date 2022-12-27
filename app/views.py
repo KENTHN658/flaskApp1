@@ -1,6 +1,9 @@
 import datetime
 from flask import jsonify, render_template
+import json
 from app import app
+from forms import forms
+
  
 @app.route('/')
 def home():
@@ -41,14 +44,46 @@ def lab03_about():
 
 @app.route('/lab03/comments/')
 def lab03_comments():
-    comments = ['This is the first comment.',
-                'This is the second comment.',
-                'This is the third comment.',
-                'This is the fourth comment.']
- 
-    return render_template('lab03/comments.html', comments=comments)
+    raw_json = read_file('data/messages.json')
+    messages = json.loads(raw_json)
+    return render_template('lab03/comments.html', comments=messages)
 
 
 @app.route('/lab04')
 def lab04_bootstrap():
     return app.send_static_file('lab04_bootstrap.html')
+
+
+
+def read_file(filename, mode="rt"):
+    with open(filename, mode, encoding='utf-8') as fin:
+        return fin.read()
+
+
+def write_file(filename, contents, mode="wt"):
+    with open(filename, mode, encoding="utf-8") as fout:
+        fout.write(contents)
+
+
+@app.route('/lab06/', methods=('GET', 'POST'))
+def lab06_index():
+    form = forms.CourseForm()
+    if form.validate_on_submit():
+        raw_json = read_file('data/course_list.json')
+        course_list = json.loads(raw_json)
+        course_list.append({'title': form.title.data,
+                            'description': form.description.data,
+                            'price': form.price.data,
+                            'available': form.available.data,
+                            'level': form.level.data
+                            })
+        write_file('data/course_list.json', json.dumps(course_list, indent=4))
+        return redirect(url_for('lab06_courses'))
+    return render_template('lab06/index.html', form=form)
+
+
+@app.route('/lab06/courses/')
+def lab06_courses():
+    raw_json = read_file('data/course_list.json')
+    course_list = json.loads(raw_json)
+    return render_template('lab06/courses.html', course_list=course_list)
