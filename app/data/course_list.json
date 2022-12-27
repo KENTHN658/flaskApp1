@@ -5,5 +5,12 @@
         "price": 34,
         "available": true,
         "level": "Beginner"
+    },
+    {
+        "title": "JavaScript",
+        "description": "Learn JS basics",
+        "price": 35,
+        "available": true,
+        "level": "Beginner"
     }
 ]
