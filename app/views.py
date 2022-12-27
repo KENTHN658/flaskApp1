@@ -1,9 +1,6 @@
-
 import datetime
 from flask import (jsonify, render_template,
                    request, url_for, flash, redirect)
-
-
 import datetime
 from flask import jsonify, render_template
 import json
@@ -53,60 +50,23 @@ def lab03_comments():
     raw_json = read_file('data/messages.json')
     messages = json.loads(raw_json)
     return render_template('lab03/comments.html', comments=messages)
-<<<<<<< HEAD
-=======
 
->>>>>>> 6b950f4670583c82919d2dee1890ebe95f496f8d
 
 
 @app.route('/lab04')
 def lab04_bootstrap():
     return app.send_static_file('lab04_bootstrap.html')
 
-<<<<<<< HEAD
-
-
-def read_file(filename, mode="rt"):
-    with open(filename, mode, encoding='utf-8') as fin:
-        return fin.read()
-
-
-=======
 def read_file(filename, mode="rt"):
     with open(filename, mode, encoding='utf-8') as fin:
         return fin.read()
  
  
->>>>>>> 6b950f4670583c82919d2dee1890ebe95f496f8d
 def write_file(filename, contents, mode="wt"):
     with open(filename, mode, encoding="utf-8") as fout:
         fout.write(contents)
 
 
-<<<<<<< HEAD
-@app.route('/lab06/', methods=('GET', 'POST'))
-def lab06_index():
-    form = forms.CourseForm()
-    if form.validate_on_submit():
-        raw_json = read_file('data/course_list.json')
-        course_list = json.loads(raw_json)
-        course_list.append({'title': form.title.data,
-                            'description': form.description.data,
-                            'price': form.price.data,
-                            'available': form.available.data,
-                            'level': form.level.data
-                            })
-        write_file('data/course_list.json', json.dumps(course_list, indent=4))
-        return redirect(url_for('lab06_courses'))
-    return render_template('lab06/index.html', form=form)
-
-
-@app.route('/lab06/courses/')
-def lab06_courses():
-    raw_json = read_file('data/course_list.json')
-    course_list = json.loads(raw_json)
-    return render_template('lab06/courses.html', course_list=course_list)
-=======
 
 @app.route('/lab03/create/', methods=('GET', 'POST'))
 def lab03_create():
@@ -128,4 +88,25 @@ def lab03_create():
     return render_template('lab03/create.html')
 
 
->>>>>>> 6b950f4670583c82919d2dee1890ebe95f496f8d
+@app.route('/lab06/', methods=('GET', 'POST'))
+def lab06_index():
+    form = forms.CourseForm()
+    if form.validate_on_submit():
+        raw_json = read_file('data/course_list.json')
+        course_list = json.loads(raw_json)
+        course_list.append({'title': form.title.data,
+                            'description': form.description.data,
+                            'price': form.price.data,
+                            'available': form.available.data,
+                            'level': form.level.data
+                            })
+        write_file('data/course_list.json', json.dumps(course_list, indent=4))
+        return redirect(url_for('lab06_courses'))
+    return render_template('lab06/index.html', form=form)
+
+    
+@app.route('/lab06/courses/')
+def lab06_courses():
+    raw_json = read_file('data/course_list.json')
+    course_list = json.loads(raw_json)
+    return render_template('lab06/courses.html', course_list=course_list)
