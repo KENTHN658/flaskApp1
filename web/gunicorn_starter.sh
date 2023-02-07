@@ -1,2 +1,12 @@
 #!/bin/sh
-gunicorn --chdir app main:app -w 2 --threads 2 -b 0.0.0.0:8000
+
+
+if [ "$FLASK_ENV" = "development" ]; then
+    echo "Creating the database tables..."
+    python3 manage.py create_db
+    python3 manage.py seed_db
+    echo "Tables created"
+fi
+
+
+gunicorn main:app -c "$PWD"/gunicorn.config.py
