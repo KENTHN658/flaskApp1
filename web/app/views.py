@@ -5,6 +5,7 @@ from sqlalchemy.sql import text
 from app import app
 from app import db
 from app.models.contact import Contact
+# from app.models.blogentry import Blogentry
 
 
 @app.route('/')
@@ -30,8 +31,20 @@ def db_connection():
 
 @app.route('/lab04')
 def lab04_bootstrap():
+    
     return app.send_static_file('lab04_bootstrap.html')
 
+@app.route("/lab4/contacts")
+def lab4_db_contacts():
+    blogentrys = []
+    db_blogentry = Blogentry.query.all()
+
+
+    blogentrys = list(map(lambda x: x.to_dict(), db_blogentry))
+    app.logger.debug("DB Contacts: " + str(blogentrys))
+
+
+    return jsonify(blogentrys)
 
 @app.route('/lab10', methods=('GET', 'POST'))
 def lab10_phonebook():
@@ -41,7 +54,7 @@ def lab10_phonebook():
         id_ = result.get('id', '')
         validated = True
         validated_dict = dict()
-        valid_keys = ['firstname', 'lastname', 'phone']
+        valid_keys = ['firstname', 'lastname', 'phone', 'date']
 
 
         # validate the input

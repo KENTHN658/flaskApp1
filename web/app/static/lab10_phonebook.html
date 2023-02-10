@@ -78,7 +78,7 @@
             $('#phonebook-table').bootstrapTable({
                 data: contact_data
             });
-            $('#phonebook-table').bootstrapTable('hideColumn', 'id');
+            //$('#phonebook-table').bootstrapTable('hideColumn', 'id');
         }
         $(document).ready(function () {
             (function () {
@@ -106,10 +106,9 @@
                 if (key != 'submit') {
                     formData[key] = val;
                 }
-
-
             });
-
+            var date = new Date();
+            formData["date"] = date.toDateString();
 
             var $form = $(this);
             var url = $form.attr("action");
