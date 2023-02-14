@@ -21,6 +21,7 @@ def seed_db():
     db.session.add(BlogEntry(name='สมชาย', message ='081-111-1111', email ='th@gmail.com'))
     db.session.add(BlogEntry(name='สมชcccccาย', message ='081-111-111ccccc1', email ='cccccccccth@gmail.com'))
     db.session.add(BlogEntry(name='สมasdasdชcccccาย', message ='081-asdasd111-111ccccc1', email ='cccccadasdasccccth@gmail.com'))
+    db.session.add(BlogEntry(name='สมasdasdชcccccาย', message ='081-asdasd11asfsafsa1-111ccccc1', email ='cccccadasdasccccth@gmaildasdasdsaasfasfa.com'))
     db.session.commit()
 
 

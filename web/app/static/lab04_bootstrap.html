@@ -44,17 +44,17 @@
               <div class="col-md-6">
                 <img src="static/img/tweeterUserSmall.jpg" class="tw-user-medium rounded-circle"
                   id="pic_user_cat"><span><button id="add_content" type="button">Add content</button></span>
-                </div>
+              </div>
               <div class="col-md-9" id="add-edit" hidden="hidden">
                 <h2 id="add_newpost">New Post</h2>
                 <form id="tweet">
-                  <label for="name"> name : </label>
-                  <input type="text" id="name" name="name_feild" placeholder="Your name..." required size="25"
+                  <!-- <label for="name"> name : </label> -->
+                  <input type="text" id="name" name="name" placeholder="Your name..." required size="25"
                     maxlength="50"><br>
-                  <label for="message">message : </label><br>
-                  <textarea id="message" name="w3review" placeholder="Your name..." rows="4" cols="35"></textarea><br>
-                  <label for="email">Email : </label>
-                  <input type="email" id="email" name="email_feild" placeholder="Your email.." . required>
+                  <!-- <label for="message">message : </label><br> -->
+                  <input  type='text' id="message" name="message" placeholder="Your name..." rows="4" cols="35"></textarea><br>
+                  <!-- <label for="email">Email : </label> -->
+                  <input type="email" id="email" name="email" placeholder="Your email.." . required>
                   <input type="hidden" id="entryid" name="id" value=""><br>
                   <input type="submit" name="submit" value="Submit">
                   <button id="clear_form" type="button">Clear</button>
@@ -104,6 +104,18 @@
     </div>
   </div>
   <script>
+    function populate_table(contact_data) {
+      $('#phonebook-table').bootstrapTable({
+        data: contact_data
+      });
+      //$('#phonebook-table').bootstrapTable('hideColumn', 'id');
+    }
+    $(document).ready(function () {
+      (function () {
+        $.getJSON("lab10/contacts", populate_table);
+      })();
+    });
+
     function toggleView() {
       if ($('#content_tweet').attr('hidden')) {
         $('#content_tweet').removeAttr('hidden');
@@ -115,6 +127,35 @@
         $('#add_content').attr('hidden', 'hidden');
       }
     }
+
+    
+    $("#tweet").submit(function (event) {
+            // prevent default html form submission action
+            event.preventDefault();
+
+
+            // pack the inputs into a dictionary
+            var formData = {};
+            $(":input").each(function () {
+                var key = $(this).attr('name');
+                var val = $(this).val();
+
+
+                if (key != 'submit') {
+                    formData[key] = val;
+                }
+            });
+            var $form = $(this);
+            var url = $form.attr("action");
+
+
+            // make a POST call to the back end w/ a callback to refresh the table
+            $.post(url, formData, function (contact_data) {
+                // refresh_table(contact_data);
+                // clearForm();
+            });
+            toggleView();
+        });
 
 
     $("#add_content").click(function () {

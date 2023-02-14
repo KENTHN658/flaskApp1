@@ -31,7 +31,7 @@ def db_connection():
 
 
 
-@app.route('/lab04')
+@app.route('/lab04', methods=('GET', 'POST'))
 def lab04_bootstrap():
     if request.method == 'POST':
         result = request.form.to_dict()
@@ -59,9 +59,9 @@ def lab04_bootstrap():
 
         
         if validated:
-            utc_dt = datetime.datetime.now()
-            utc_dt_1 = utc_dt.strftime("%c")
-            validated_dict['date'] = utc_dt_1
+            # utc_dt = datetime.datetime.now()
+            # utc_dt_1 = utc_dt.strftime("%c")
+            # validated_dict['date'] = utc_dt_1
             
             app.logger.debug('validated dict: ' + str(validated_dict))
             # if there is no id: create a new contact entry
@@ -71,14 +71,14 @@ def lab04_bootstrap():
                 db.session.add(entry)
             # if there is an id already: update the contact entry
             else:
-                contact = Contact.query.get(id_)
-                contact.update(**validated_dict)
+                blogentry = BlogEntry.query.get(id_)
+                blogentry.update(**validated_dict)
 
 
             db.session.commit()
 
 
-        return lab10_db_contacts()  
+        return lab04_db_blog()  
     return app.send_static_file('lab04_bootstrap.html')
 
 
@@ -146,7 +146,7 @@ def lab10_db_contacts():
     return jsonify(contacts)
 
 @app.route("/lab04/blog")
-def lab4_db_contacts():
+def lab04_db_blog():
     blogEntrys = []
     db_blogentry = BlogEntry.query.all()
     
