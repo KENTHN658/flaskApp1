@@ -5,7 +5,9 @@ from sqlalchemy.sql import text
 from app import app
 from app import db
 from app.models.contact import Contact
-# from app.models.blogentry import Blogentry
+from app.models.blogentry import BlogEntry
+import datetime
+
 
 
 @app.route('/')
@@ -31,33 +33,17 @@ def db_connection():
 
 @app.route('/lab04')
 def lab04_bootstrap():
-    
-    return app.send_static_file('lab04_bootstrap.html')
-
-@app.route("/lab4/contacts")
-def lab4_db_contacts():
-    blogentrys = []
-    db_blogentry = Blogentry.query.all()
-
-
-    blogentrys = list(map(lambda x: x.to_dict(), db_blogentry))
-    app.logger.debug("DB Contacts: " + str(blogentrys))
-
-
-    return jsonify(blogentrys)
-
-@app.route('/lab10', methods=('GET', 'POST'))
-def lab10_phonebook():
     if request.method == 'POST':
         result = request.form.to_dict()
         app.logger.debug(str(result))
         id_ = result.get('id', '')
         validated = True
         validated_dict = dict()
-        valid_keys = ['firstname', 'lastname', 'phone', 'date']
+        valid_keys = ['name', 'message', 'email']
 
 
         # validate the input
+
         for key in result:
             app.logger.debug(key, result[key])
             # screen of unrelated inputs
@@ -71,8 +57,63 @@ def lab10_phonebook():
                 break
             validated_dict[key] = value
 
-
+        
         if validated:
+            utc_dt = datetime.datetime.now()
+            utc_dt_1 = utc_dt.strftime("%c")
+            validated_dict['date'] = utc_dt_1
+            
+            app.logger.debug('validated dict: ' + str(validated_dict))
+            # if there is no id: create a new contact entry
+            if not id_:
+                entry = BlogEntry(**validated_dict)
+                app.logger.debug(str(entry))
+                db.session.add(entry)
+            # if there is an id already: update the contact entry
+            else:
+                contact = Contact.query.get(id_)
+                contact.update(**validated_dict)
+
+
+            db.session.commit()
+
+
+        return lab10_db_contacts()  
+    return app.send_static_file('lab04_bootstrap.html')
+
+
+@app.route('/lab10', methods=('GET', 'POST'))
+def lab10_phonebook():
+    if request.method == 'POST':
+        result = request.form.to_dict()
+        app.logger.debug(str(result))
+        id_ = result.get('id', '')
+        validated = True
+        validated_dict = dict()
+        valid_keys = ['firstname', 'lastname', 'phone', 'date']
+
+
+        # validate the input
+
+        for key in result:
+            app.logger.debug(key, result[key])
+            # screen of unrelated inputs
+            if key not in valid_keys:
+                continue
+
+
+            value = result[key].strip()
+            if not value or value == 'undefined':
+                validated = False
+                break
+            validated_dict[key] = value
+
+        
+        if validated:
+            utc_dt = datetime.datetime.now()
+            utc_dt_1 = utc_dt.strftime("%c")
+            validated_dict['date'] = utc_dt_1
+            
             app.logger.debug('validated dict: ' + str(validated_dict))
             # if there is no id: create a new contact entry
             if not id_:
@@ -103,6 +144,16 @@ def lab10_db_contacts():
 
 
     return jsonify(contacts)
+
+@app.route("/lab04/blog")
+def lab4_db_contacts():
+    blogEntrys = []
+    db_blogentry = BlogEntry.query.all()
+    
+    blogEntrys = list(map(lambda x: x.to_dict(), db_blogentry))
+    app.logger.debug("DB blog: " + str(blogEntrys))
+
+    return jsonify(blogEntrys)
 
 
 @app.route('/lab10/remove_contact', methods=('GET', 'POST'))

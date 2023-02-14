@@ -11,7 +11,7 @@ class Contact(db.Model, SerializerMixin):
     phone = db.Column(db.String(20))
     date = db.Column(db.String(100))
 
-    def __init__(self, firstname, lastname, phone,date):
+    def __init__(self, firstname, lastname, phone, date):
         self.firstname = firstname
         self.lastname = lastname
         self.phone = phone

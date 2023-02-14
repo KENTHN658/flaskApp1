@@ -52,3 +52,13 @@ img.tw-user-medium {
 .tweet-media {
     padding-right: 10px;
 }
+
+#add_content {
+    margin-left: 37%;
+    margin-top: 0px;
+}
+
+#pic_user_cat{
+    margin-left: 10px;
+    margin-top: 20px;
+}

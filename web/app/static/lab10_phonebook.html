@@ -22,7 +22,7 @@
     <div id="header" class="container">
         <h1>Phonebook</h1>
     </div>
-    <div id="add-edit" class="container" hidden="hidden">
+    <div id="add-edit" class="container">
         <h2 id="add-edit-caption">Add/Edit a Contact:</h2>
         <form id="addPhoneNumberForm">
             <label for="firstname">ชื่อ</label>
@@ -107,9 +107,6 @@
                     formData[key] = val;
                 }
             });
-            var date = new Date();
-            formData["date"] = date.toDateString();
-
             var $form = $(this);
             var url = $form.attr("action");
 
