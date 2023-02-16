@@ -106,7 +106,10 @@
     </div>
     <script>
         function populate_table(contact_data) {
-            var data = 
+            $('#phonebook-table').bootstrapTable({
+                data: contact_data
+            });
+            //$('#phonebook-table').bootstrapTable('hideColumn', 'id');
         }
         $(document).ready(function () {
             (function () {
