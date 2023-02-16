@@ -72,13 +72,41 @@
                 </tr>
             </thead>
         </table>
+        <table class="table-striped border-success" id="phonebook-table">
+            <thead>
+                <tr>
+                    <th data-field="id">
+                        <span class="text-success">
+                            id
+                        </span>
+                    </th>
+                    <th data-field="firstname">
+                        <span class="text-success">
+                            ชื่อ
+                        </span>
+                    </th>
+                    <th data-field="lastname">
+                        <span class="text-success">
+                            นามสกุล
+                        </span>
+                    </th>
+                    <th data-field="phone">
+                        <span class="text-success">
+                            โทรศัพท์
+                        </span>
+                    </th>
+                    <th data-field="operation" data-formatter="actionFormatter" data-events="operateEvents">
+                        <span class="text-success">
+                            แก้ไข/ลบ
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+        </table>
     </div>
     <script>
         function populate_table(contact_data) {
-            $('#phonebook-table').bootstrapTable({
-                data: contact_data
-            });
-            //$('#phonebook-table').bootstrapTable('hideColumn', 'id');
+            var data = 
         }
         $(document).ready(function () {
             (function () {

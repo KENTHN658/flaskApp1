@@ -2,7 +2,7 @@ from app import db
 from sqlalchemy_serializer import SerializerMixin
 import datetime
 class BlogEntry(db.Model, SerializerMixin):
-    __tablename__ = "blogEntrys"
+    __tablename__ = "blogentry"
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -14,7 +14,7 @@ class BlogEntry(db.Model, SerializerMixin):
 
     def __init__(self, name, message, email):
         self.name = name
-        self.message =  message
+        self.message =  message 
         self.email = email
         self.date_created = datetime.datetime.now()
         

@@ -38,61 +38,61 @@
         <div class="content-box">Trends</div>
       </div>
       <div id="center_6" class="col-md-6">
-        <div class="content-box">
-          <div class="new_tweet_rol">
-            <div class="row">
-              <div class="col-md-6">
-                <img src="static/img/tweeterUserSmall.jpg" class="tw-user-medium rounded-circle"
-                  id="pic_user_cat"><span><button id="add_content" type="button">Add content</button></span>
-              </div>
-              <div class="col-md-9" id="add-edit" hidden="hidden">
+        <div class="box-of-add-edit">
+          <div class="row">
+            <div class="col-md-2">
+              <img src="static/img/tweeterUserSmall.jpg" class="tw-user-small rounded-circle mx-auto d-block"
+                id="pic-user">
+            </div>
+            <div class="col-md-10">
+              <button id="add_content" type="button">Add content</button>
+              <form id="tweet-add-edit" hidden="hidden">
                 <h2 id="add_newpost">New Post</h2>
-                <form id="tweet">
-                  <!-- <label for="name"> name : </label> -->
-                  <input type="text" id="name" name="name" placeholder="Your name..." required size="25"
-                    maxlength="50"><br>
-                  <!-- <label for="message">message : </label><br> -->
-                  <input  type='text' id="message" name="message" placeholder="Your name..." rows="4" cols="35"></textarea><br>
-                  <!-- <label for="email">Email : </label> -->
-                  <input type="email" id="email" name="email" placeholder="Your email.." . required>
-                  <input type="hidden" id="entryid" name="id" value=""><br>
-                  <input type="submit" name="submit" value="Submit">
-                  <button id="clear_form" type="button">Clear</button>
-                  <button id="cancel_form" type="button">Cancel</button>
-                </form>
-              </div>
+                <label for="name"> name : </label>
+                <input type="text" id="name" name="name" placeholder="Your name..." required size="25"
+                  maxlength="50"><br>
+                <label for="message">message : </label><br>
+                <input type='text' id="message" name="message" placeholder="Your name..." rows="4"
+                  cols="35"></textarea><br>
+                <label for="email">Email : </label>
+                <input type="email" id="email" name="email" placeholder="Your email.." . required>
+                <input type="hidden" id="entryid" name="id" value=""><br>
+                <input type="submit" name="submit" value="Submit">
+                <button id="clear_form" type="button">Clear</button>
+                <button id="cancel_form" type="button">Cancel</button>
+              </form>
             </div>
           </div>
-          &nbsp;
-          <div class="tweet" id="content_tweet">
-            <div class="row">
-              <div class="col-md-2 text-center">
-                <img class="tw-user-medium rounded-circle" src="static/img/tweeterUserSmall.jpg">
+        </div>
+        &nbsp;
+        <div class="content-box" id="content-post">
+          <div class="row">
+            <div class="col-md-2 text-center">
+              <img class="tw-user-medium rounded-circle" src="static/img/tweeterUserSmall.jpg">
+            </div>
+            <div class="col-md-10">
+              <div class="row tweet-info">
+                <div class="col-md-auto">
+                  <span class="tweet-username">Hamster News</span>
+                  <span class="tweet-usertag text-muted">@hamsternews</span>-
+                  <span class="tweet-age text-muted">1d</span>
+                </div>
+                <div class="col tweet-arrow text-muted">
+                  <span class="oi oi-arrow-thick-bottom float-right"></span>
+                </div>
               </div>
-              <div class="col-md-10">
-                <div class="row tweet-info">
-                  <div class="col-md-auto">
-                    <span class="tweet-username">Hamster News</span>
-                    <span class="tweet-usertag text-muted">@hamsternews</span>-
-                    <span class="tweet-age text-muted">1d</span>
-                  </div>
-                  <div class="col tweet-arrow text-muted">
-                    <span class="oi oi-arrow-thick-bottom float-right"></span>
-                  </div>
-                </div>
-                <div class="tweet-text">
-                  Hamsters like to run all night long, keeping
-                  you awake!!!
-                </div>
-                <div class="tweet-media">
-                  <img class="img-fluid rounded" src="static/img/hamsters-running.jpg">
-                </div>
-                <div class="row text-muted">
-                  <div class="col-md-2"><span class="oi oi-bullhorn"></span></div>
-                  <div class="col-md-2"><span class="oi oi-loop-circular"></span></div>
-                  <div class="col-md-2"><span class="oi oi-heart"></span></div>
-                  <div class="col-md-2"><span class="oi oi-envelope-open"></span></div>
-                </div>
+              <div class="tweet-text">
+                Hamsters like to run all night long, keeping
+                you awake!!!
+              </div>
+              <div class="tweet-media">
+                <img class="img-fluid rounded" src="static/img/hamsters-running.jpg">
+              </div>
+              <div class="row text-muted">
+                <div class="col-md-2"><span class="oi oi-bullhorn"></span></div>
+                <div class="col-md-2"><span class="oi oi-loop-circular"></span></div>
+                <div class="col-md-2"><span class="oi oi-heart"></span></div>
+                <div class="col-md-2"><span class="oi oi-envelope-open"></span></div>
               </div>
             </div>
           </div>
@@ -105,63 +105,79 @@
   </div>
   <script>
     function populate_table(contact_data) {
-      $('#phonebook-table').bootstrapTable({
-        data: contact_data
-      });
-      //$('#phonebook-table').bootstrapTable('hideColumn', 'id');
+      var data = contact_data;
+      data.forEach(function(item)){
+        var blog_item = document.createElement("div");
+        blog_item.innerHTML = 
+          <div class="row">
+            <div class="col-md-2 text-center">
+              <img class="tw-user-medium rounded-circle" src="static/img/tweeterUserSmall.jpg">
+            </div>
+            <div class="col-md-10">
+              <div class="row tweet-info">
+                <div class="col-md-auto">
+                  <span class="tweet-username">Hamster News</span>
+                  <span class="tweet-usertag text-muted">@hamsternews</span>-
+                  <span class="tweet-age text-muted">1d</span>
+                </div>
+                <div class="col tweet-arrow text-muted">
+                  <span class="oi oi-arrow-thick-bottom float-right"></span>
+                </div>
+              </div>
+              <div class="tweet-text">
+                Hamsters like to run all night long, keeping
+                you awake!!!
+              </div>
+              <div class="tweet-media">
+                <img class="img-fluid rounded" src="static/img/hamsters-running.jpg">
+              </div>
+              <div class="row text-muted">
+                <div class="col-md-2"><span class="oi oi-bullhorn"></span></div>
+                <div class="col-md-2"><span class="oi oi-loop-circular"></span></div>
+                <div class="col-md-2"><span class="oi oi-heart"></span></div>
+                <div class="col-md-2"><span class="oi oi-envelope-open"></span></div>
+              </div>
+            </div>
+          </div>;
+      };
+      
     }
     $(document).ready(function () {
       (function () {
-        $.getJSON("lab10/contacts", populate_table);
+        $.getJSON("/lab04/blog", populate_table);
       })();
     });
+    function refresh_table(contact_data) {
+      $('#content-post').bootstrapTable('load', contact_data);
+    }
+
+
+
 
     function toggleView() {
-      if ($('#content_tweet').attr('hidden')) {
-        $('#content_tweet').removeAttr('hidden');
-        $('#add-edit').attr('hidden', 'hidden');
+      if ($('#content-post').attr('hidden')) {
+        $('#content-post').removeAttr('hidden');
+        $('#tweet-add-edit').attr('hidden', 'hidden');
         $('#add_content').removeAttr('hidden');
       } else {
-        $('#content_tweet').attr('hidden', 'hidden');
-        $('#add-edit').removeAttr('hidden');
+        $('#content-post').attr('hidden', 'hidden');
+        $('#tweet-add-edit').removeAttr('hidden');
         $('#add_content').attr('hidden', 'hidden');
       }
     }
 
-    
-    $("#tweet").submit(function (event) {
-            // prevent default html form submission action
-            event.preventDefault();
-
-
-            // pack the inputs into a dictionary
-            var formData = {};
-            $(":input").each(function () {
-                var key = $(this).attr('name');
-                var val = $(this).val();
-
-
-                if (key != 'submit') {
-                    formData[key] = val;
-                }
-            });
-            var $form = $(this);
-            var url = $form.attr("action");
-
-
-            // make a POST call to the back end w/ a callback to refresh the table
-            $.post(url, formData, function (contact_data) {
-                // refresh_table(contact_data);
-                // clearForm();
-            });
-            toggleView();
-        });
+    function clearForm() {
+      $('#tweet-add-edit')[0].reset();
+      $('#entryid').val('');
+    }
 
 
     $("#add_content").click(function () {
       toggleView();
     });
+
     $("#clear_form").click(function () {
+      clearForm()
     });
 
 
@@ -169,6 +185,34 @@
       toggleView();
     });
 
+
+    $("#tweet-add-edit").submit(function (event) {
+      // prevent default html form submission action
+      event.preventDefault();
+
+
+      // pack the inputs into a dictionary
+      var formData = {};
+      $(":input").each(function () {
+        var key = $(this).attr('name');
+        var val = $(this).val();
+
+
+        if (key != 'submit') {
+          formData[key] = val;
+        }
+      });
+      var $form = $(this);
+      var url = $form.attr("action");
+
+
+      // make a POST call to the back end w/ a callback to refresh the table
+      $.post(url, formData, function (contact_data) {
+        // refresh_table(contact_data);
+        clearForm();
+      });
+      toggleView();
+    });
 
   </script>
 

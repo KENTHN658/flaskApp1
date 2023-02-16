@@ -24,11 +24,11 @@ img.tw-user-medium {
     background-color: #67b1f9;
     color: #ffffff;
 }
-.content-box {
+.content-box { 
     background-color: #ffffff;
-    margin-bottom 10px;
+    margin-bottom: 10px;
 }
-.new-tweet-row {
+.box-of-add-edit {
     background-color: #eaf5fe;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -53,12 +53,8 @@ img.tw-user-medium {
     padding-right: 10px;
 }
 
-#add_content {
-    margin-left: 37%;
-    margin-top: 0px;
+#pic-user{
+    margin-left: 20px;
 }
 
-#pic_user_cat{
-    margin-left: 10px;
-    margin-top: 20px;
-}
+.link-muted { color: #aaa; } .link-muted:hover { color: #1266f1; }
