@@ -58,14 +58,14 @@
               <form id="tweet-add-edit" hidden="hidden">
                 <h2 id="add_newpost">New Post</h2>
                 <h2 id="edit_content" hidden="hidden">Edit content</h2>
-                <label for="name"> name : </label>
-                <input type="text" id="name" name="name" placeholder="Your name..." required size="25"
+                <label for="name"> name : </label><br>
+                <input type="text" id="name" name="name" placeholder="Your name..." required size="20"
                   maxlength="50"><br>
                 <label for="message">message : </label><br>
-                <input type='text' id="message" name="message" placeholder="Your name..." rows="4"
-                  cols="35"></textarea><br>
-                <label for="email">Email : </label>
-                <input type="email" id="email" name="email" placeholder="Your email.." . required>
+                <textarea type='text' id="message" name="message" placeholder="Your name..." rows="4"
+                  cols="22"></textarea><br>
+                <label for="email">Email : </label><br>
+                <input type="email" id="email" name="email" placeholder="Your email.." . required><br>
                 <input type="hidden" id="entryid" name="id" value=""><br>
                 <input type="submit" name="submit" value="Submit">
                 <button id="clear_form" type="button">Clear</button>
@@ -99,6 +99,7 @@
             <div class="col-md-2 text-center">
               <img class="tw-user-medium rounded-circle" src="static/img/tweeterUserSmall.jpg">
             </div>
+            
             <div class="content-of-content col-md-10">
               <div class="row tweet-info">
                 <div class="col-md-auto">
@@ -130,6 +131,7 @@
     }
     //https://stackoverflow.com/questions/9344306/jquery-click-doesnt-work-on-ajax-generated-content
     $('.content-box').on('click', '#edit', function (e) {
+      console.log("hellow");
       e.preventDefault();
       const parent = e.target.parentElement.parentElement.parentElement;
       let name = parent.querySelector(".tweet-username").textContent;

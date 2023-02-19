@@ -51,7 +51,10 @@ img.tw-user-medium {
 .tweet-text,
 .tweet-media {
     padding-right: 10px;
+    word-wrap: break-word;
+
 }
+
 
 #pic-user{
     margin-left: 20px;
