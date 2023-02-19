@@ -137,10 +137,12 @@
 
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
+                console.log(row);
                 prePopulateForm(row);
                 toggleView();
             },
             'click .remove': function (e, value, row, index) {
+                console.log(row);
                 removeItem(row);
             }
         }

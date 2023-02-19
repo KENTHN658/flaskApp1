@@ -36,4 +36,7 @@ COPY . /app
 RUN chmod 755 /app/gunicorn_starter.sh
 ENTRYPOINT [ "./gunicorn_starter.sh" ]
 
+# keep Docker process running
+CMD ["tail", "-f", "/dev/null"]
+
     

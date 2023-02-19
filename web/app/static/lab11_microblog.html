@@ -165,7 +165,7 @@
       if (!confirm("Delete " + name + ' ' + email + '?')) {
         return false;
       }
-      var url = "/lab04/remove_blog"
+      var url = "/lab11/remove_blog"
       var formData = { 'id': id };
       $.post(url, formData, function (contact_data) {
         populate_blog(contact_data);
@@ -175,7 +175,7 @@
 
     $(document).ready(function () {
       (function () {
-        $.getJSON("/lab04/blog", populate_blog);
+        $.getJSON("/lab11/blog", populate_blog);
       })();
     });
 
