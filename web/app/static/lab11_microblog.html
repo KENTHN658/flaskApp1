@@ -63,9 +63,9 @@
                   maxlength="50"><br>
                 <label for="message">message : </label><br>
                 <textarea type='text' id="message" name="message" placeholder="Your name..." rows="4"
-                  cols="22"></textarea><br>
+                  cols="22" require></textarea><br>
                 <label for="email">Email : </label><br>
-                <input type="email" id="email" name="email" placeholder="Your email.." . required><br>
+                <input type="email" id="email" name="email"   formtarget=""><br>
                 <input type="hidden" id="entryid" name="id" value=""><br>
                 <input type="submit" name="submit" value="Submit">
                 <button id="clear_form" type="button">Clear</button>
@@ -231,7 +231,15 @@
     }
 
 
-    $("#add_content").click(function () {
+    $("#add_content").click(function (contact_data) {
+      $.getJSON("/lab11/blog", function(contact_data) {
+        if(contact_data.length == 0)
+          return; 
+        i = contact_data[0];
+        $('#name').val(i.name);
+        $('#email').val(i.email);
+      });
+      
       toggleView();
     });
 
