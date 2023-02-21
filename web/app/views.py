@@ -42,7 +42,6 @@ def lab11_bootstrap():
         # validate the input
 
         for key in result:
-            app.logger.debug(key, result[key])
             # screen of unrelated inputs
             if key not in valid_keys:
                 continue
@@ -53,8 +52,6 @@ def lab11_bootstrap():
                 validated = False
                 break
             validated_dict[key] = value
-
-        
         if validated:
             # utc_dt = datetime.datetime.now()
             # utc_dt_1 = utc_dt.strftime("%c")
