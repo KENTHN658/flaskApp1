@@ -63,7 +63,7 @@
                   maxlength="50"><br>
                 <label for="message">message : </label><br>
                 <textarea type='text' id="message" name="message" placeholder="Your name..." rows="4"
-                  cols="22"></textarea><br>
+                  cols="22" required></textarea><br>
                 <label for="email">Email : </label><br>
                 <input type="email" id="email" name="email" placeholder="Your email.." . required><br>
                 <input type="hidden" id="entryid" name="id" value=""><br>
@@ -150,8 +150,7 @@
       $('#message').val(message);
       $('#email').val(email);
       $('#entryid').val(id);
-      toggleView();
-      
+      toggleView();0
     }
 
     $('.content-box').on('click', '#delete', function (e) {
@@ -232,6 +231,13 @@
 
 
     $("#add_content").click(function () {
+      $.getJSON("/lab11/blog", maintain_data);
+      function maintain_data(blog){
+        $('#tweet-add-edit')[0].reset();
+        $('#name').val(blog[0].name);
+        $('#email').val(blog[0].email);
+        $('#entryid').val(blog[0].id);
+      }
       toggleView();
     });
 
