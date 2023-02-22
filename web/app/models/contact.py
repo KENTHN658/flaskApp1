@@ -9,17 +9,16 @@ class Contact(db.Model, SerializerMixin):
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
     phone = db.Column(db.String(20))
-    date = db.Column(db.String(100))
+  
 
-    def __init__(self, firstname, lastname, phone, date):
+    def __init__(self, firstname, lastname, phone):
         self.firstname = firstname
         self.lastname = lastname
         self.phone = phone
-        self.date = date
+       
 
-
-    def update(self, firstname, lastname, phone, date):
+    def update(self, firstname, lastname, phone):
         self.firstname = firstname
         self.lastname = lastname
         self.phone = phone
-        self.date = date
+    

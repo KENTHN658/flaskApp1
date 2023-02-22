@@ -56,6 +56,11 @@ input[type=submit]:hover {
     float: right;
 }
 
+.box3 {
+    float: right;
+}
+
+
 
 .container {
     border-radius: 5px;

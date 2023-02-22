@@ -20,8 +20,11 @@
 
 <body>
     <div id="header" class="container">
-        <h1>Phonebook</h1>
-    </div>
+        <div class="box3">
+          <button id="logout" type="button">Logout</button>
+        </div>
+        <h1>{{ current_user.name }}'s Phonebook</h1>
+      </div>
     <div id="add-edit" class="container">
         <h2 id="add-edit-caption">Add/Edit a Contact:</h2>
         <form id="addPhoneNumberForm">
@@ -38,7 +41,7 @@
         </form>
     </div>
     &nbsp;
-    <div id="contact_display" class="container">
+    <div id="contact_display" class="container" hidden="hidden">
         <button id="add_contact" type="button">Create Contact</button>
         <h2>Contacts:</h2>
         <table class="table-striped border-success" id="phonebook-table">
@@ -78,7 +81,7 @@
             $('#phonebook-table').bootstrapTable({
                 data: contact_data
             });
-            //$('#phonebook-table').bootstrapTable('hideColumn', 'id');
+            $('#phonebook-table').bootstrapTable('hideColumn', 'id');
         }
         $(document).ready(function () {
             (function () {
@@ -191,6 +194,12 @@
             clearForm();
             toggleView();
         });
+
+        $("#logout").click(function () {
+            clearForm();
+            window.location.href = "lab12/logout";
+        });
+
 
 
 
