@@ -107,13 +107,14 @@ def lab10_db_contacts():
     return jsonify(contacts)
 
 @app.route('/lab10/remove_contact', methods=('GET', 'POST'))
+@login_required
 def lab10_remove_contacts():
     app.logger.debug("LAB10 - REMOVE")
     if request.method == 'POST':
         result = request.form.to_dict()
         id_ = result.get('id', '')
         try:
-            contact = PrivateContact.query.filter(PrivateContact.owner_id == current_user.id)
+            contact = PrivateContact(**validated_dict)
             db.session.delete(contact)
             db.session.commit()
         except Exception as ex:
