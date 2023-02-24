@@ -3,6 +3,7 @@ from flask import (jsonify, render_template,
 import json
 from werkzeug.security import check_password_hash
 from werkzeug.urls import url_parse
+from werkzeug.security import generate_password_hash
 
 from sqlalchemy.sql import text
 from flask_login import login_user, login_required, logout_user, current_user
@@ -113,13 +114,15 @@ def lab10_remove_contacts():
     if request.method == 'POST':
         result = request.form.to_dict()
         id_ = result.get('id', '')
-        try:
-            contact = PrivateContact.query.get(id_)  
-            db.session.delete(contact)
-            db.session.commit()
-        except Exception as ex:
-            app.logger.debug(ex)
-            raise
+        contact = PrivateContact.query.get(id_)
+        if contact.owner_id == current_user.id:
+            try:
+                contact = PrivateContact.query.get(id_)  
+                db.session.delete(contact)
+                db.session.commit()
+            except Exception as ex:
+                app.logger.debug(ex)
+                raise
     return lab10_db_contacts()
 
 

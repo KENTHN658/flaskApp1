@@ -23,6 +23,7 @@ class AuthUser(db.Model, UserMixin):
         self.avatar_url = avatar_url
 
 class PrivateContact(Contact, UserMixin, SerializerMixin):
+    __tablename__ = "private_contact"
     owner_id = db.Column(db.Integer, db.ForeignKey('auth_users.id'))
 
 
