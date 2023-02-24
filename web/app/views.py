@@ -114,13 +114,14 @@ def lab10_remove_contacts():
         result = request.form.to_dict()
         id_ = result.get('id', '')
         try:
-            contact = PrivateContact(**validated_dict)
+            contact = PrivateContact.query.get(id_)  
             db.session.delete(contact)
             db.session.commit()
         except Exception as ex:
             app.logger.debug(ex)
             raise
     return lab10_db_contacts()
+
 
 @app.route('/lab11', methods=('GET', 'POST'))
 def lab11_bootstrap():
