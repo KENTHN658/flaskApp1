@@ -12,6 +12,7 @@
   <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
     crossorigin="anonymous"></script>
 
+
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
     crossorigin="anonymous"></script>
@@ -25,6 +26,7 @@
 </head>
 
 <body>
+  <p id="curr_id" hidden="hidden">{{current_user.id}}</p>
   <nav class="navbar navbar-expand-md navbar-light">
     <div class="container">
       <div class="navbar-nav">
@@ -35,7 +37,8 @@
       </div>
       <form class="form-inline">
         <input class="form-control" id="nav-search" type="search" placeholder="Search Twitter"> &nbsp;
-        <img class="tw-user-small rounded-circle" src="static/img/tweeterUserSmall.jpg"> &nbsp;
+        <img class="tw-user-small rounded-circle" src="{{current_user.avatar_url}}"> &nbsp;
+        <a class="nav-item nav-link" href="/lab12/logout"><span class="oi oi-account-logout"></span>log out</a>
         <button class="btn" id="nav-tweet-btn" type="submit">Tweet</button>
       </form>
     </div>
@@ -50,11 +53,12 @@
         <div class="box-of-add-edit">
           <div class="row">
             <div class="col-md-2">
-              <img src="static/img/tweeterUserSmall.jpg" class="tw-user-small rounded-circle mx-auto d-block"
-                id="pic-user">
+              <img src="{{current_user.avatar_url}}" class="tw-user-small rounded-circle mx-auto d-block" id="pic-user">
             </div>
             <div class="col-md-10">
+              {% if current_user.is_authenticated %}
               <button id="add_content" type="button">Add content</button>
+
               <form id="tweet-add-edit" hidden="hidden">
                 <h2 id="add_newpost">New Post</h2>
                 <h2 id="edit_content" hidden="hidden">Edit content</h2>
@@ -62,8 +66,8 @@
                 <input type="text" id="name" name="name" placeholder="Your name..." required size="20"
                   maxlength="50"><br>
                 <label for="message">message : </label><br>
-                <textarea type='text' id="message" name="message" placeholder="Your name..." rows="4"
-                  cols="22" required></textarea><br>
+                <textarea type='text' id="message" name="message" placeholder="Your name..." rows="4" cols="22"
+                  required></textarea><br>
                 <label for="email">Email : </label><br>
                 <input type="email" id="email" name="email" placeholder="Your email.." . required><br>
                 <input type="hidden" id="entryid" name="id" value=""><br>
@@ -71,6 +75,7 @@
                 <button id="clear_form" type="button">Clear</button>
                 <button id="cancel_form" type="button">Cancel</button>
               </form>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -81,23 +86,73 @@
       </div>
       <div id="right_3" class="col-md-3">
         <div class="content-box">Who to follow</div>
+
       </div>
     </div>
   </div>
 
   <script>
+    var curr_id = document.getElementById("curr_id");
+    var curr_id = curr_id.innerText;
+    console.log(curr_id);
+    let data_user_big = [];
+    let data_content_big = [];
+
+    $.getJSON("/lab11/user", function (Array_data_user) {
+      Array_data_user.forEach(element => {
+        let dict = {};
+        dict['avatar_url'] = element.avatar_url;
+        dict['email'] = element.email;
+        dict['id'] = element.id;
+        dict['name'] = element.name;
+        dict['password'] = element.password;
+        data_user_big.push(dict);
+      });
+
+    });
+    console.log(data_user_big);
+
+    $.getJSON("/lab11/blog", function (Array_data_content) {
+      Array_data_content.forEach(element => {
+        let dict = {};
+        dict['date_created'] = element.date_created;
+        dict['date_update'] = element.date_update;
+        dict['email'] = element.email;
+        dict['id'] = element.id;
+        dict['message'] = element.message;
+        dict['name'] = element.name;
+        dict['owner_id'] = element.owner_id;
+        data_content_big.push(dict);
+      });
+
+    });
+
+
+
     function populate_blog(contact_data) {
       const content = document.querySelector('.content-box');
       let output = '';
       contact_data.forEach(item => {
+        console.log("1");
         var date = new Date();
         var offset = date.getTimezoneOffset()
-        db_date = new Date((Date.parse(item.date_update) - (offset * 60 * 1000))).toLocaleString("en-GB")
+        db_date = new Date((Date.parse(item.date_update) - (offset * 60 * 1000))).toLocaleString("en-GB");
+        var image = "";
+
+        for (let j = 0; j < data_user_big.length; j++) {
+          if (item.owner_id == data_user_big[j].id) {
+            console.log(data_user_big[j].avatar_url);
+            image = data_user_big[j].avatar_url;
+            console.log(image);
+            break;
+          }
+        }
+        // console.log(image[0]);
         output +=
           `
         <div class="tweet">
             <div class="col-md-2 text-center">
-              <img class="tw-user-medium rounded-circle" src="static/img/tweeterUserSmall.jpg">
+              <img class="tw-user-medium rounded-circle width="52" src = "${image}">
             </div>
             
             <div class="content-of-content col-md-10">
@@ -107,6 +162,7 @@
                   <span class="tweet-age text-muted">${db_date}</span>
                   <span class="tweet-id" hidden="hidden">${item.id}</span>
                   <div class="tweet-email text-muted">${item.email}</div>
+                  <span class="tweet-owner_id" hidden="hidden">${item.owner_id}</span>
                 </div>
                 <div class="col tweet-arrow text-muted">
                   <span class="oi oi-arrow-thick-bottom float-right"></span>
@@ -114,13 +170,16 @@
               </div>
               <div class="tweet-text">
                 ${item.message}
+                
               </div>
               <div class="row text-muted">
                 <div class="col-md-2"><span class="oi oi-bullhorn"></span></div>
                 <div class="col-md-2"><span class="oi oi-loop-circular"></span></div>
                 <div class="col-md-2"><span class="oi oi-heart"></span></div>
-                <div class="edit col-md-2"><a class="oi oi-pencil" id="edit" href="javascript:void(0)"></a></div>
-                <div class="delete col-md-2"><a class="oi oi-delete" id="delete" href="javascript:void(0)"></a></div>
+               
+                <div class="edit col-md-2"><a class="oi oi-pencil" id="edit" href="javascript:void(0)"  = {{current_user.id}}></a></div>
+                <div class="delete col-md-2"><a class="oi oi-delete" id="delete" href="javascript:void(0)" = {{current_user.id}}></a></div>
+               
               </div>
             </div>
           </div>
@@ -128,7 +187,9 @@
       });
       content.innerHTML = output;
       output = '';
+
     }
+
     //https://stackoverflow.com/questions/9344306/jquery-click-doesnt-work-on-ajax-generated-content
     $('.content-box').on('click', '#edit', function (e) {
       console.log("hellow");
@@ -138,19 +199,33 @@
       let email = parent.querySelector(".tweet-email").textContent;
       let message = parent.querySelector(".tweet-text").textContent;
       let id = parent.querySelector(".tweet-id").textContent;
+      let owner_id = e.target.parentElement.parentElement.parentElement.querySelector(".tweet-owner_id").textContent;
       console.log(name, email, message, id);
-      prePopulateForm(name, email, message, id);
-      $('#add_newpost').attr('hidden', 'hidden');
-      $('#edit_content').removeAttr('hidden');
+      if (curr_id == owner_id) {
+        prePopulateForm(name, email, message, id, owner_id);
+        $('#add_newpost').attr('hidden', 'hidden');
+        $('#edit_content').removeAttr('hidden');
+      } else {
+        confirm("ไม่ใช่ post ของคุณ แต่เป็นของ " + name + ' ' + email)
+      }
     });
 
-    function prePopulateForm(name, email, message, id) {
+    function prePopulateForm(name, email, message, id, owner_id) {
+      var name_new = '';
+      var email_new = '';
+      for (let j = 0; j < data_user_big.length; j++) {
+        if (owner_id == data_user_big[j].id) {
+          name_new = data_user_big[j].name;
+          email_new = data_user_big[j].email;
+          break;
+        }
+      }
       $('#tweet-add-edit')[0].reset();
-      $('#name').val(name);
+      $('#name').val(name_new);
       $('#message').val(message);
-      $('#email').val(email);
+      $('#email').val(email_new);
       $('#entryid').val(id);
-      toggleView();0
+      toggleView();
     }
 
     $('.content-box').on('click', '#delete', function (e) {
@@ -158,19 +233,25 @@
       let email = e.target.parentElement.parentElement.parentElement.querySelector(".tweet-email").textContent;
       let name = e.target.parentElement.parentElement.parentElement.querySelector(".tweet-username").textContent;
       let id = e.target.parentElement.parentElement.parentElement.querySelector(".tweet-id").textContent;
+      let owner_id = e.target.parentElement.parentElement.parentElement.querySelector(".tweet-owner_id").textContent;
       console.log(name, email, id)
-      removeItem(id, name, email);
+      removeItem(id, name, email, owner_id);
     });
 
-    function removeItem(id, name, email) {
-      if (!confirm("Delete " + name + ' ' + email + '?')) {
-        return false;
+    function removeItem(id, name, email, owner_id) {
+      console.log(curr_id, owner_id)
+      if (curr_id == owner_id) {
+        if (!confirm("Delete " + name + ' ' + email + '?')) {
+          return false;
+        }
+        var url = "/lab11/remove_blog"
+        var formData = { 'id': id };
+        $.post(url, formData, function (contact_data) {
+          populate_blog(contact_data);
+        });
+      } else {
+        confirm("Can not Delete " + name + ' ' + email)
       }
-      var url = "/lab11/remove_blog"
-      var formData = { 'id': id };
-      $.post(url, formData, function (contact_data) {
-        populate_blog(contact_data);
-      });
     }
 
 
@@ -208,8 +289,6 @@
         clearForm();
       });
       toggleView();
-      $('#edit_content').attr('hidden', 'hidden');
-      $('#add_newpost').removeAttr('hidden');
     });
 
     function toggleView() {
@@ -231,12 +310,17 @@
 
 
     $("#add_content").click(function () {
-      $.getJSON("/lab11/blog", maintain_data);
-      function maintain_data(blog){
-        $('#tweet-add-edit')[0].reset();
-        $('#name').val(blog[0].name);
-        $('#email').val(blog[0].email);
+      var name_new = '';
+      var email_new = '';
+      for (let j = 0; j < data_user_big.length; j++) {
+        if (curr_id == data_user_big[j].id) {
+          name_new = data_user_big[j].name;
+          email_new = data_user_big[j].email;
+          break;
+        }
       }
+      $('#name').val(name_new);
+      $('#email').val(email_new);
       toggleView();
     });
 
@@ -250,6 +334,12 @@
       $('#edit_content').attr('hidden', 'hidden');
       toggleView();
     });
+
+
+
+
+
+
 
 
 
