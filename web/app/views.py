@@ -126,6 +126,55 @@ def lab10_remove_contacts():
                 raise
     return lab10_db_contacts()
 
+@app.route('/lab11')
+
+def lab11():
+    if request.method == 'POST':
+        result = request.form.to_dict()
+        app.logger.debug(str(result))
+        id_ = result.get('id', '')
+        validated = True
+        validated_dict = dict()
+        valid_keys = ['name', 'message', 'email']
+
+
+        # validate the input
+
+        for key in result:
+            # screen of unrelated inputs
+            if key not in valid_keys:
+                continue
+
+
+            value = result[key].strip()
+            if not value or value == 'undefined':
+                validated = False
+                break
+            validated_dict[key] = value
+        if validated:
+            
+            
+            
+            app.logger.debug('validated dict: ' + str(validated_dict))
+            # if there is no id: create a new contact entry
+            if not id_:
+                validated_dict['owner_id'] = current_user.id
+                entry = PrivateBlog(**validated_dict)
+                app.logger.debug(str(entry))
+                db.session.add(entry)
+            # if there is an id already: update the contact entry
+            else:
+                validated_dict['owner_id'] = current_user.id
+                blogentry = PrivateBlog.query.get(id_)
+                blogentry.update(**validated_dict)
+
+
+            db.session.commit()
+
+
+        return lab11_db_blog()  
+    return render_template('lab12/lab11_microblog.html')
+
 
 @app.route('/lab11', methods=('GET', 'POST'))
 @login_required

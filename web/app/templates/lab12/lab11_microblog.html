@@ -138,11 +138,15 @@
         var offset = date.getTimezoneOffset()
         db_date = new Date((Date.parse(item.date_update) - (offset * 60 * 1000))).toLocaleString("en-GB");
         var image = "";
+        var name_2 = "";
+        var email_2 = "";
 
         for (let j = 0; j < data_user_big.length; j++) {
           if (item.owner_id == data_user_big[j].id) {
             console.log(data_user_big[j].avatar_url);
             image = data_user_big[j].avatar_url;
+            name_2 = data_user_big[j].name;
+            email_2 = data_user_big[j].email;
             console.log(image);
             break;
           }
@@ -158,10 +162,10 @@
             <div class="content-of-content col-md-10">
               <div class="row tweet-info">
                 <div class="col-md-auto">
-                  <span class="tweet-username">${item.name}</span>
+                  <span class="tweet-username">${name_2}</span>
                   <span class="tweet-age text-muted">${db_date}</span>
                   <span class="tweet-id" hidden="hidden">${item.id}</span>
-                  <div class="tweet-email text-muted">${item.email}</div>
+                  <div class="tweet-email text-muted">${email_2}</div>
                   <span class="tweet-owner_id" hidden="hidden">${item.owner_id}</span>
                 </div>
                 <div class="col tweet-arrow text-muted">
@@ -176,9 +180,10 @@
                 <div class="col-md-2"><span class="oi oi-bullhorn"></span></div>
                 <div class="col-md-2"><span class="oi oi-loop-circular"></span></div>
                 <div class="col-md-2"><span class="oi oi-heart"></span></div>
-               
-                <div class="edit col-md-2"><a class="oi oi-pencil" id="edit" href="javascript:void(0)"  = {{current_user.id}}></a></div>
+              ${curr_id == item.owner_id ?
+                `<div class="edit col-md-2"><a class="oi oi-pencil" id="edit" href="javascript:void(0)"  = {{current_user.id}}></a></div>
                 <div class="delete col-md-2"><a class="oi oi-delete" id="delete" href="javascript:void(0)" = {{current_user.id}}></a></div>
+                `: ``}
                
               </div>
             </div>
