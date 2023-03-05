@@ -11,8 +11,7 @@ class BlogEntry(db.Model, SerializerMixin):
     email = db.Column(db.String(50))
     date_created = db.Column(db.DateTime)
     date_update = db.Column(db.DateTime)
-
-
+    
     def __init__(self, name, message, email):
         self.name = name
         self.message =  message 

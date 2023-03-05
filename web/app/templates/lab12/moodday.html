@@ -1,0 +1,192 @@
+{% extends "lab12/base.html" %}
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.3.js" 
+        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+        crossorigin="anonymous">
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.js" 
+        integrity="sha512-Cv3WnEz5uGwmTnA48999hgbYV1ImGjsDWyYQakowKw+skDXEYYSU+rlm9tTflyXc8DbbKamcLFF80Cf89f+vOQ=="
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer">
+</script> -->
+<link rel="stylesheet" href="../static/css/emoji.css">
+
+<div class="column is-6 is-offset-3">
+    <p id="curr_id" hidden="hidden">{{current_user.id}}</p>
+    <h3 class="title">Mood in diary</h3>
+    <div class="box"></div>
+    
+</div>
+<script>
+    var curr_id = document.getElementById("curr_id");
+    var curr_id = curr_id.innerText;
+    console.log(curr_id);
+    let data_mood = [];
+    let data_time1 = [];
+    let data_time2 = [];
+    let data_sleep1 = [];
+    let data_sleep2 = [];
+    let data_boring1 = [];
+    let data_boring2 = [];
+    let data_meditation1 = [];
+    let data_meditation2 = [];
+    let data_mind1 = [];
+    let data_mind2 = [];
+    let data_social1 = [];
+    let data_social2 = [];
+    var stress = '';
+
+    $.getJSON("/lab13/data_mood", function (Array_data_mood) {
+        Array_data_mood.forEach(element => {
+            let dict = {};
+            if (element.owner_id == curr_id) {
+                dict['boring'] = element.boring;
+                dict['date_created'] = element.date_created;
+                dict['date_update'] = element.date_update;
+                dict['id'] = element.id;
+                dict['meditation'] = element.meditation;
+                dict['messages'] = element.messages;
+                dict['mind'] = element.mind;
+                dict['owner_id'] = element.owner_id;
+                dict['pivate'] = element.pivate;
+                dict['sleep'] = element.sleep;
+                dict['social'] = element.social;
+                data_time1.push(element.date_created);
+                data_sleep1.push(element.sleep);
+                data_boring1.push(element.boring);
+                data_mind1.push(element.mind);
+                data_social1.push(element.social);
+                data_meditation1.push(element.meditation);
+                data_mood.push(dict);
+
+            }
+        });
+        populate_blog();
+        manage_Time();
+        showchart();
+    });
+
+    function manage_Time() {
+        for (let index = data_time1.length - 1; index >= 0; index--) {
+            var date = new Date();
+            var offset = date.getTimezoneOffset()
+            db_date = new Date((Date.parse(data_time1[index]) - (offset * 60 * 1000))).toLocaleString("en-GB");
+            data_time2.push(db_date);
+            data_social2.push(data_social1[index])
+            data_mind2.push(data_mind1[index])
+            data_meditation2.push(data_meditation1[index])
+            data_boring2.push(data_boring1[index])
+            data_sleep2.push(data_sleep1[index])
+        }
+    }
+
+    function populate_blog() {
+        const content = document.querySelector('.box');
+        let output = '';
+        let cal_stress = '';
+        var date = new Date();
+        var offset = date.getTimezoneOffset()
+        db_date = new Date((Date.parse(data_mood[0].date_update) - (offset * 60 * 1000))).toLocaleString("en-GB");
+        cal_stress = parseInt(data_mood[0].sleep) + parseInt(data_mood[0].social) + parseInt(data_mood[0].mind) + parseInt(data_mood[0].boring)+  parseInt(data_mood[0].meditation);
+        console.log(cal_stress);
+        output +=
+        
+        `     
+            <div class="mood">
+                <p>${db_date}<p>
+                <p>ระดับความเครียดของคุณในวันนี้ : ${cal_stress}</p>
+                ${ cal_stress >= 10 ?
+                `<p>เครียดมากที่สุด</p>
+                `: cal_stress >= 8 ?
+                `<p>เครียดมาก</p>
+                `:cal_stress >= 5 ?
+                `<p>เครียดปานกลาง</p>`
+                :`<p>เครียดน้อย</p>`}
+            </div>
+            <div class="chart">
+                <canvas id="myChart" style="width:100%;"></canvas>
+            </div>
+            <a href="{{ url_for('lab12_profile') }}" class="skip">
+              skip
+            </a>
+            <div class="emoji">
+                <div class="eye-1">
+                    <div class="iris">
+                        <div class="circle-1"></div>
+                        <div class="circle-2"></div>
+                    </div>
+                </div>
+                <div class="eye-2">
+                    <div class="iris">
+                        <div class="circle-1"></div>
+                        <div class="circle-2"></div>
+                    </div>
+                </div>
+                ${ cal_stress < 4 ? `<div class="smile"></div> `: `<div class="mouth"></div> `}
+                <div class="eye-brow-1"></div>
+                <div class="eye-brow-2"></div>
+            </div>
+            `
+
+        content.innerHTML = output;
+        output = '';
+
+    }
+
+    function showchart() {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data_time2,
+                datasets: [{
+                    label: 'Mind',
+                    data: data_mind2,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+
+                },
+                {
+                    label: 'Sleep',
+                    data: data_sleep2,
+                    borderColor: 'rgb(192, 75, 192)',
+                    tension: 0.1
+                },
+                {
+                    label: 'Boring',
+                    data: data_boring2,
+                    borderColor: 'rgb(192, 192, 75)',
+                    tension: 0.1
+                },
+                {
+                    label: 'Meditation',
+                    data: data_meditation2,
+                    borderColor: 'rgb(75, 75, 192)',
+                    tension: 0.1
+                },
+                {
+                    label: 'social',
+                    data: data_social2,
+                    borderColor: 'rgb(192, 190, 70)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
+    console.log(data_mood);
+</script>
+{% endblock %}

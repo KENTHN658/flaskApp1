@@ -1,0 +1,102 @@
+{% extends "lab12/base.html" %}
+{% block content %}
+<link rel="stylesheet" href="../static/css/mytwitter.css">
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+<div class="column is-6 is-offset-3">
+    <h3 class="title">แบบประเมินความเครียด</h3>
+    <div class="box">
+        <form method="POST">
+            <div>วันที่ปัจจุบันคือ <span id="date"></span><span id="clock"></span></div><br>
+
+
+            <table style="width:100%">
+                <tr>
+                    <th>ความรู็สึกที่เกิดขึ้น</th>
+                    <th>แทบไม่มี</th>
+                    <th>เป็นบางครั้ง</th>
+                    <th>บ่อยครั้ง</th>
+                    <th>เป็นประจำ</th>
+                </tr>
+                <tr>
+                    <td>มีปัญหาการนอน นอนไม่หลับหรือนอนมาก</td>
+                    <td><input type="radio" id="sleep" name="sleep" value="0" required></td>
+                    <td><input type="radio" id="sleep" name="sleep" value="1" required></td>
+                    <td><input type="radio" id="sleep" name="sleep" value="2" required></td>
+                    <td><input type="radio" id="sleep" name="sleep" value="3" required></td>
+                </tr>
+                <tr>
+                    <td>มีสมาธิน้อยลง</td>
+                    <td><input type="radio" id="meditation" name="meditation" value="0" required></td>
+                    <td><input type="radio" id="meditation" name="meditation" value="1" required></td>
+                    <td><input type="radio" id="meditation" name="meditation" value="2" required></td>
+                    <td><input type="radio" id="meditation" name="meditation" value="3" required></td>
+                </tr>
+                <tr>
+                    <td>หงุดหงิด/กระวนกระวาย/ว้าวุ่นใจ</td>
+                    <td><input type="radio" id="mind" name="mind" value="0" required></td>
+                    <td><input type="radio" id="mind" name="mind" value="1" required></td>
+                    <td><input type="radio" id="mind" name="mind" value="2" required></td>
+                    <td><input type="radio" id="mind" name="mind" value="3" required></td>
+                </tr>
+                <tr>
+                    <td>รู้สึกเบื่อ เซ็ง</td>
+                    <td><input type="radio" id="boring" name="boring" value="0" required></td>
+                    <td><input type="radio" id="boring" name="boring" value="1" required></td>
+                    <td><input type="radio" id="boring" name="boring" value="2" required></td>
+                    <td><input type="radio" id="boring" name="boring" value="3" required></td>
+                </tr>
+                <tr>
+                    <td>ไม่อยากพบปะผู้คน</td>
+                    <td><input type="radio" id="social" name="social" value="0" required></td>
+                    <td><input type="radio" id="social" name="social" value="1" required></td>
+                    <td><input type="radio" id="social" name="social" value="2" required></td>
+                    <td><input type="radio" id="social" name="social" value="3" required></td>
+                </tr>
+            </table><br>
+            <label for="birthdaytime">POST </label><br>
+            <input type="radio" id="pivate" name="pivate" value="Public" required><span> :Public</span>
+            <input type="radio" id="pivate" name="pivate" value="Private" required><span> :Private</span>
+            <br>
+            <textarea type='text' id="messages" name="messages" placeholder="Your mood" rows="4" cols="92"></textarea>
+            <br>
+            <button class="button is-block is-info is-large is-fullwidth">SEND</button>
+        </form>
+    </div>
+</div>
+<script>
+    console.log("555");
+    let today = new Date().toISOString().slice(0, 10);
+    document.getElementById("date").innerHTML = today;
+
+    function displayTime() {
+        var d = new Date();
+        var hour = d.getHours(); // 0-23
+        var min = d.getMinutes(); // 0-59
+        var sec = d.getSeconds(); // 0-59
+        var amOrPm = "AM";
+        if (hour >= 12) {
+            amOrPm = "PM";
+        }
+        if (hour > 12) {
+            hour = hour - 12;
+        }
+        if (hour < 10)
+            hour = "0" + hour;
+        if (min < 10)
+            min = "0" + min;
+        if (sec < 10)
+            sec = "0" + sec;
+        document.getElementById("clock").innerHTML = " " + hour + ":" + min + ":" + sec + " " + amOrPm;
+    }
+    setInterval(displayTime, 1000);
+
+
+</script>
+{% endblock %}

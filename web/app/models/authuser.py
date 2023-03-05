@@ -4,6 +4,7 @@ from app import db
 from sqlalchemy_serializer import SerializerMixin
 from .contact import Contact
 from .blogentry import BlogEntry
+from .moods import Moody
 
 class AuthUser(db.Model, UserMixin, SerializerMixin):
     __tablename__ = "auth_users"
@@ -45,6 +46,18 @@ class PrivateBlog(BlogEntry, UserMixin, SerializerMixin):
 
     def update(self, name, message, email, owner_id):
         super().__init__( name, message, email)
+        self.owner_id = owner_id
+
+
+class PrivateMood(Moody, UserMixin, SerializerMixin):
+    owner_id = db.Column(db.Integer, db.ForeignKey('auth_users.id'))
+
+    def __init__(self, sleep, meditation, mind, boring, social, messages, pivate, owner_id):
+        super().__init__( sleep, meditation, mind, boring, social, messages, pivate)
+        self.owner_id = owner_id
+
+    def update(self, sleep, meditation, mind, boring, social, messages, pivate, owner_id):
+        super().__init__( sleep, meditation, mind, boring, social, messages, pivate)
         self.owner_id = owner_id
 
     

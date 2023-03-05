@@ -14,7 +14,8 @@ from app import login_manager
 
 from app.models.contact import Contact
 from app.models.blogentry import BlogEntry
-from app.models.authuser import AuthUser, PrivateContact, PrivateBlog
+from app.models.authuser import AuthUser, PrivateContact, PrivateBlog, PrivateMood
+from app.models.moods import Moody
 import datetime
 
 
@@ -129,50 +130,6 @@ def lab10_remove_contacts():
 @app.route('/lab11')
 
 def lab11():
-    if request.method == 'POST':
-        result = request.form.to_dict()
-        app.logger.debug(str(result))
-        id_ = result.get('id', '')
-        validated = True
-        validated_dict = dict()
-        valid_keys = ['name', 'message', 'email']
-
-
-        # validate the input
-
-        for key in result:
-            # screen of unrelated inputs
-            if key not in valid_keys:
-                continue
-
-
-            value = result[key].strip()
-            if not value or value == 'undefined':
-                validated = False
-                break
-            validated_dict[key] = value
-        if validated:
-            
-            
-            
-            app.logger.debug('validated dict: ' + str(validated_dict))
-            # if there is no id: create a new contact entry
-            if not id_:
-                validated_dict['owner_id'] = current_user.id
-                entry = PrivateBlog(**validated_dict)
-                app.logger.debug(str(entry))
-                db.session.add(entry)
-            # if there is an id already: update the contact entry
-            else:
-                validated_dict['owner_id'] = current_user.id
-                blogentry = PrivateBlog.query.get(id_)
-                blogentry.update(**validated_dict)
-
-
-            db.session.commit()
-
-
-        return lab11_db_blog()  
     return render_template('lab12/lab11_microblog.html')
 
 
@@ -220,8 +177,6 @@ def lab11_bootstrap():
 
 
             db.session.commit()
-
-
         return lab11_db_blog()  
     return render_template('lab12/lab11_microblog.html')
 
@@ -279,8 +234,6 @@ def lab12_login():
         email = request.form.get('email')
         password = request.form.get('password')
         remember = bool(request.form.get('remember'))
-
-
         user = AuthUser.query.filter_by(email=email).first()
  
         # check if the user actually exists
@@ -462,3 +415,67 @@ def lab12_bedit():
        
         return redirect(url_for('lab12_edit'))
     return render_template('lab12/bedit.html')
+
+@app.route('/lab13/form', methods=('GET', 'POST'))
+@login_required
+def lab13_mood():
+    if request.method == 'POST':
+        result = request.form.to_dict()
+        app.logger.debug(str(result))
+        id_ = result.get('id', '')
+        validated = True
+        validated_dict = dict()
+        valid_keys = ['sleep', 'meditation', 'mind', 'boring', 'social', 'pivate', 'messages']
+
+        # validate the input
+        for key in result:
+            # screen of unrelated inputs
+            app.logger.debug(str(key))
+            if key not in valid_keys:
+                continue
+
+            value = result[key].strip()
+            if not value or value  == 'undefined':
+                if key != 'messages':
+                    value = 'undefined'
+                    validated = False
+                    app.logger.debug(str(value) + "bugggg")
+                    break
+                elif(key == 'messages'):
+                    value = "null"
+            validated_dict[key] = value
+            app.logger.debug(str(value) + "oiasdasd")
+            
+        if validated:
+            app.logger.debug('validated dict: ' + str(validated_dict))
+            # if there is no id: create a new contact entry
+            if not id_:
+                validated_dict['owner_id'] = current_user.id
+                entry = PrivateMood(**validated_dict)
+                app.logger.debug(str(entry))
+                db.session.add(entry)
+            # if there is an id already: update the contact entry
+            else:
+                validated_dict['owner_id'] = current_user.id
+                blogentry = PrivateMood.query.get(id_)
+                PrivateMood.update(**validated_dict)
+            
+            db.session.commit()
+            return redirect(url_for('lab13_mood_sum'))
+        
+    return render_template('lab12/mood.html')
+
+@app.route("/lab13/data_mood")
+def lab13_data_mood():
+    blogEntrys = []
+    # https://stackoverflow.com/questions/15791760/how-can-i-do-multiple-order-by-in-flask-sqlalchemy
+    db_blogentry = PrivateMood.query.order_by(Moody.date_update.desc()).all()
+    blogEntrys = list(map(lambda x: x.to_dict(), db_blogentry))
+    app.logger.debug("DB blog: " + str(blogEntrys))
+    
+    return jsonify(blogEntrys)
+
+@app.route('/lab13/look')
+@login_required
+def lab13_mood_sum():
+    return render_template('lab12/moodday.html')
