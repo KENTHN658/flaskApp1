@@ -35,9 +35,11 @@
     let data_mind2 = [];
     let data_social1 = [];
     let data_social2 = [];
+    let data_sum1 = [];
+    let data_sum2 = [];
     var stress = '';
 
-    $.getJSON("/lab13/data_mood", function (Array_data_mood) {
+    $.getJSON("/lab13/data1", function (Array_data_mood) {
         Array_data_mood.forEach(element => {
             let dict = {};
             if (element.owner_id == curr_id) {
@@ -46,18 +48,18 @@
                 dict['date_update'] = element.date_update;
                 dict['id'] = element.id;
                 dict['meditation'] = element.meditation;
-                dict['messages'] = element.messages;
                 dict['mind'] = element.mind;
                 dict['owner_id'] = element.owner_id;
-                dict['pivate'] = element.pivate;
                 dict['sleep'] = element.sleep;
                 dict['social'] = element.social;
+                dict['sum_mood'] = element.sum_mood;
                 data_time1.push(element.date_created);
                 data_sleep1.push(element.sleep);
                 data_boring1.push(element.boring);
                 data_mind1.push(element.mind);
                 data_social1.push(element.social);
                 data_meditation1.push(element.meditation);
+                data_sum1.push(element.sum_mood);
                 data_mood.push(dict);
 
             }
@@ -65,6 +67,7 @@
         populate_blog();
         manage_Time();
         showchart();
+        console.log(data_mood);
     });
 
     function manage_Time() {
@@ -78,6 +81,7 @@
             data_meditation2.push(data_meditation1[index])
             data_boring2.push(data_boring1[index])
             data_sleep2.push(data_sleep1[index])
+            data_sum2.push(data_sum1[index])
         }
     }
 
@@ -88,8 +92,7 @@
         var date = new Date();
         var offset = date.getTimezoneOffset()
         db_date = new Date((Date.parse(data_mood[0].date_update) - (offset * 60 * 1000))).toLocaleString("en-GB");
-        cal_stress = parseInt(data_mood[0].sleep) + parseInt(data_mood[0].social) + parseInt(data_mood[0].mind) + parseInt(data_mood[0].boring)+  parseInt(data_mood[0].meditation);
-        console.log(cal_stress);
+        cal_stress = data_mood[0].sum_mood;
         output +=
         
         `     
@@ -110,23 +113,10 @@
             <a href="{{ url_for('lab12_profile') }}" class="skip">
               skip
             </a>
-            <div class="emoji">
-                <div class="eye-1">
-                    <div class="iris">
-                        <div class="circle-1"></div>
-                        <div class="circle-2"></div>
-                    </div>
-                </div>
-                <div class="eye-2">
-                    <div class="iris">
-                        <div class="circle-1"></div>
-                        <div class="circle-2"></div>
-                    </div>
-                </div>
-                ${ cal_stress < 4 ? `<div class="smile"></div> `: `<div class="mouth"></div> `}
-                <div class="eye-brow-1"></div>
-                <div class="eye-brow-2"></div>
-            </div>
+           ${ cal_stress < 5 ? `<div ><img src="/static/img/s.gif"></div> `
+           :cal_stress < 8 ? `<div ><img src="/static/img/s2.gif"></div> `
+           :cal_stress < 10 ? `<div ><img src="/static/img/sad.gif"></div> `: `<div ><img src="/static/img/a.gif"></div>`}
+            
             `
 
         content.innerHTML = output;
@@ -168,6 +158,12 @@
                 {
                     label: 'social',
                     data: data_social2,
+                    borderColor: 'rgb(192, 190, 70)',
+                    tension: 0.1
+                },
+                {
+                    label: 'sum mood in day',
+                    data: data_sum2,
                     borderColor: 'rgb(192, 190, 70)',
                     tension: 0.1
                 }]

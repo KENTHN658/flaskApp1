@@ -14,8 +14,9 @@ from app import login_manager
 
 from app.models.contact import Contact
 from app.models.blogentry import BlogEntry
-from app.models.authuser import AuthUser, PrivateContact, PrivateBlog, PrivateMood
+from app.models.authuser import AuthUser, PrivateContact, PrivateBlog, PrivateMood, PrivateMessage
 from app.models.moods import Moody
+from app.models.message import Message
 import datetime
 
 
@@ -158,6 +159,9 @@ def lab11_bootstrap():
                 validated = False
                 break
             validated_dict[key] = value
+
+
+
         if validated:
             
             
@@ -425,27 +429,24 @@ def lab13_mood():
         id_ = result.get('id', '')
         validated = True
         validated_dict = dict()
-        valid_keys = ['sleep', 'meditation', 'mind', 'boring', 'social', 'pivate', 'messages']
+        valid_keys = ['sleep', 'meditation', 'mind', 'boring', 'social']
+       
 
-        # validate the input
         for key in result:
             # screen of unrelated inputs
-            app.logger.debug(str(key))
             if key not in valid_keys:
                 continue
 
+
             value = result[key].strip()
-            if not value or value  == 'undefined':
-                if key != 'messages':
-                    value = 'undefined'
-                    validated = False
-                    app.logger.debug(str(value) + "bugggg")
-                    break
-                elif(key == 'messages'):
-                    value = "null"
+            if not value or value == 'undefined':
+                validated = False
+                break
             validated_dict[key] = value
-            app.logger.debug(str(value) + "oiasdasd")
-            
+
+        cal_mood = int(validated_dict['sleep']) + int(validated_dict['meditation']) + int(validated_dict['mind']) + int(validated_dict['social']) + int(validated_dict['boring']) 
+        validated_dict['sum_mood'] = cal_mood
+
         if validated:
             app.logger.debug('validated dict: ' + str(validated_dict))
             # if there is no id: create a new contact entry
@@ -461,15 +462,74 @@ def lab13_mood():
                 PrivateMood.update(**validated_dict)
             
             db.session.commit()
-            return redirect(url_for('lab13_mood_sum'))
+            return redirect(url_for('lab13_message'))
         
     return render_template('lab12/mood.html')
 
-@app.route("/lab13/data_mood")
+
+@app.route('/lab13/message', methods=('GET', 'POST'))
+@login_required
+def lab13_message():
+    if request.method == 'POST':
+        result = request.form.to_dict()
+        app.logger.debug(str(result))
+        id_ = result.get('id', '')
+        validated = True
+        validated_dict = dict()
+        valid_keys = ['privacy', 'messages']
+        app.logger.debug('validated dict: ' + str(result))
+
+        if len(result['messages']) == 0: 
+           result['messages'] = 'null'
+
+        for key in result:
+            # screen of unrelated inputs
+            if key not in valid_keys:
+                continue
+     
+            value = result[key].strip()
+           
+            if not value or value == 'undefined':
+                validated = False
+                break
+            validated_dict[key] = value
+        
+        
+
+        if validated:
+            app.logger.debug('validated dict: ' + str(validated_dict))
+            # if there is no id: create a new contact entry
+            if not id_:
+                validated_dict['owner_id'] = current_user.id
+                entry = PrivateMessage(**validated_dict)
+                app.logger.debug(str(entry))
+                db.session.add(entry)
+            # if there is an id already: update the contact entry
+            else:
+                validated_dict['owner_id'] = current_user.id
+                blogentry = PrivateMessage.query.get(id_)
+                PrivateMessage.update(**validated_dict)
+            
+            db.session.commit()
+            return redirect(url_for('lab13_mood_sum'))
+        
+    return render_template('/lab12/messmood.html')
+
+@app.route("/lab13/data1")
 def lab13_data_mood():
     blogEntrys = []
     # https://stackoverflow.com/questions/15791760/how-can-i-do-multiple-order-by-in-flask-sqlalchemy
     db_blogentry = PrivateMood.query.order_by(Moody.date_update.desc()).all()
+    blogEntrys = list(map(lambda x: x.to_dict(), db_blogentry))
+    app.logger.debug("DB blog: " + str(blogEntrys))
+    
+    return jsonify(blogEntrys)
+
+@app.route("/lab13/data2")
+def lab13_data_Message():
+    blogEntrys = []
+    # https://stackoverflow.com/questions/15791760/how-can-i-do-multiple-order-by-in-flask-sqlalchemy
+    db_blogentry = PrivateMessage.query.order_by(Message.date_update.desc()).all()
     blogEntrys = list(map(lambda x: x.to_dict(), db_blogentry))
     app.logger.debug("DB blog: " + str(blogEntrys))
     

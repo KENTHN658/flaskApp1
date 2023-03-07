@@ -1,6 +1,10 @@
 {% extends "lab12/base.html" %}
 {% block content %}
 <link rel="stylesheet" href="../static/css/mytwitter.css">
+<script src="https://code.jquery.com/jquery-3.6.3.js" 
+        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+        crossorigin="anonymous">
+</script>
 <style>
     table,
     th,
@@ -10,9 +14,12 @@
     }
 </style>
 <div class="column is-6 is-offset-3">
-    <h3 class="title">แบบประเมินความเครียด</h3>
+    <p id="curr_id" hidden="hidden">{{current_user.id}}</p>
+    <h3 class="title" id="Assessment_1">แบบประเมินความเครียด</h3>
     <div class="box">
-        <form method="POST">
+        <h3 id="Assessment_3" hidden="hidden">วันนี้ท่านได้ประเมินไปแล้ว</h3>
+        <a href="{{ url_for('lab13_message') }}"hidden="hidden" id="Assessment_4">SKIP</a>
+        <form method="POST" id="Assessment_2" >
             <div>วันที่ปัจจุบันคือ <span id="date"></span><span id="clock"></span></div><br>
 
 
@@ -60,20 +67,18 @@
                     <td><input type="radio" id="social" name="social" value="3" required></td>
                 </tr>
             </table><br>
-            <label for="birthdaytime">POST </label><br>
-            <input type="radio" id="pivate" name="pivate" value="Public" required><span> :Public</span>
-            <input type="radio" id="pivate" name="pivate" value="Private" required><span> :Private</span>
-            <br>
-            <textarea type='text' id="messages" name="messages" placeholder="Your mood" rows="4" cols="92"></textarea>
-            <br>
             <button class="button is-block is-info is-large is-fullwidth">SEND</button>
         </form>
     </div>
 </div>
 <script>
+    var curr_id = document.getElementById("curr_id");
+    console.log(curr_id);
+    var curr_id = curr_id.innerText;
     console.log("555");
     let today = new Date().toISOString().slice(0, 10);
     document.getElementById("date").innerHTML = today;
+    let data_mood = [];
 
     function displayTime() {
         var d = new Date();
@@ -96,6 +101,59 @@
         document.getElementById("clock").innerHTML = " " + hour + ":" + min + ":" + sec + " " + amOrPm;
     }
     setInterval(displayTime, 1000);
+
+
+    $.getJSON("/lab13/data1", function (Array_1) {
+        Array_1.forEach(element => {
+            let dict = {};
+            if (element.owner_id == curr_id) {
+                dict['date_created'] = element.date_created;
+                dict['date_update'] = element.date_update;
+                dict['id'] = element.id;
+                dict['owner_id'] = element.owner_id;
+                data_mood.push(dict);
+               
+            }
+        });
+        if (data_mood.length > 0){
+            one_time();
+        }
+    });
+
+    function one_time(){
+        const date  = data_mood[0].date_created;
+        const date_2 = new Date(date);
+        let day = date_2.getDate()
+        let year = date_2.getYear();
+        let month = date_2.getMonth();
+
+        let date_s  = new Date();
+        let day_s = date_s.getDate();
+        let year_s = date_s.getYear();
+        let month_s = date_s.getMonth();
+
+        
+        if(day == day_s && year == year_s && month == month_s){
+            console.log("55asdasd")
+            $('#Assessment_1').attr('hidden', 'hidden');
+            $('#Assessment_2').attr('hidden', 'hidden');
+            $('#Assessment_3').removeAttr('hidden');
+            $('#Assessment_4').removeAttr('hidden');
+        }else{
+            console.log("55999999d")
+            $('#Assessment_1').removeAttr('hidden');
+            $('#Assessment_2').removeAttr('hidden');
+            $('#Assessment_3').attr('hidden', 'hidden');
+            $('#Assessment_4').attr('hidden', 'hidden');
+        }
+
+    }
+
+    console.log(data_mood);
+
+    
+
+    
 
 
 </script>
